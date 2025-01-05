@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import { Router } from "express";
+import { ServerError } from "../utils/error";
 
 const router = Router();
 
@@ -17,10 +18,7 @@ router.post('/', async function (req, res) {
     try {
         const duplicated = await Link.findOne({ link: body.link });
         if (duplicated) {
-            throw ({
-                code: 400,
-                message: "Duplicated link",
-            });
+            throw ServerError(400, 'Duplicated link');
         }
 
         const link = new Link({ id: crypto.randomUUID(), link: body.link, title: body.title, timestamp: Date.now() });
@@ -37,6 +35,10 @@ router.post('/', async function (req, res) {
     } finally {
         res.end();
     }
+})
+
+router.get('/', async function(req, res) {
+
 })
 
 export default router;
