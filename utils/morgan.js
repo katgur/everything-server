@@ -1,7 +1,7 @@
 import morgan from 'morgan';
 
-morgan.token('response-body', (_req, res) =>
-  JSON.stringify(res.__custombody__),
+morgan.token('response-body', (_, res) =>
+  res.statusCode === 200 ? null : JSON.stringify(res.__custombody__),
 )
 
 export default morgan;

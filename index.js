@@ -10,6 +10,6 @@ import { extractCustomBodyMiddleware } from './utils/extractCustomBodyMiddleware
 app.use(cors());
 app.use(json());
 app.use(extractCustomBodyMiddleware());
-app.use(morgan(':method :url :status :response-body - :response-time ms'));
+app.use(morgan(':method :url :status :response-body :response-time ms'));
 
 app.use('/link', link)
