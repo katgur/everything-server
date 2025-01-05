@@ -1,31 +1,15 @@
 import 'dotenv/config'
 
-import express from 'express';
-import database from './database.js';
+import { json } from 'express';
+import app from './app.js';
 import link from './controllers/link.js';
 import cors from 'cors';
-import morgan from 'morgan';
-
-const PORT = process.env.PORT;
-
-const app = express();
+import morgan from './utils/morgan.js';
+import { extractCustomBodyMiddleware } from './utils/extractCustomBodyMiddleware.js';
 
 app.use(cors());
-app.use(express.json());
-app.use(morgan(':method :url :status - :response-time ms'));
+app.use(json());
+app.use(extractCustomBodyMiddleware());
+app.use(morgan(':method :url :status :response-body - :response-time ms'));
 
 app.use('/link', link)
-
-function startHandler() {
-  console.log(`Server listening on port ${PORT}`);
-  database.connect();
-}
-
-async function exitHandler() {
-  await database.disconnect();
-  process.exit();
-}
-
-app.listen(PORT, startHandler);
-process.on('SIGINT', exitHandler.bind(null));
-process.on('uncaughtException', exitHandler.bind(null));
