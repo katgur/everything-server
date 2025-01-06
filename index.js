@@ -1,4 +1,4 @@
-import 'dotenv/config'
+import 'dotenv/config';
 
 import { json } from 'express';
 import app from './app.js';
@@ -12,4 +12,4 @@ app.use(json());
 app.use(extractCustomBodyMiddleware());
 app.use(morgan(':method :url :status :response-body :response-time ms'));
 
-app.use('/link', link)
+app.use('/link', link);

@@ -1,6 +1,6 @@
 export function ServerError(code, message) {
-    return ({
+    return {
         code,
-        message,
-    })
+        message
+    };
 }
