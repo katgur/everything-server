@@ -10,13 +10,6 @@ function startHandler() {
     database.connect();
 }
 
-async function exitHandler() {
-    // await database.disconnect();
-    process.exit();
-}
-
 app.listen(PORT, startHandler);
-process.on("SIGINT", exitHandler.bind(null));
-process.on("uncaughtException", exitHandler.bind(null));
 
 export default app;
