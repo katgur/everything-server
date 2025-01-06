@@ -1,60 +1,39 @@
-import { Schema, model } from 'mongoose';
-import { Router } from 'express';
-import { ServerError } from '../utils/error.js';
+import { Router } from "express";
+import { ServerError } from "../utils/error.js";
+import database from "../database.js";
 
 const router = Router();
 
-const linkSchema = new Schema({
-    link: String,
-    title: String,
-    timestamp: Number
-});
-const Link = model('Link', linkSchema);
-
-router.post('/', async function (req, res) {
+router.post("/", async function (req, _, next) {
     const { body } = req;
 
-    try {
-        const duplicated = await Link.findOne({ link: body.link });
-        if (duplicated) {
-            throw ServerError(400, 'Duplicated link');
-        }
+    const duplicated = await database.query(
+        async ({ Link }) => await Link.findOne({ link: body.link }),
+        next
+    );
+    if (duplicated) {
+        next(ServerError(400, "Duplicated link"));
+        return;
+    }
 
+    const result = await database.query(async ({ Link }) => {
         const link = new Link({
             link: body.link,
             title: body.title,
             timestamp: Date.now()
         });
-        await link.save();
-        res.status(200);
-    } catch (error) {
-        if (error.code) {
-            res.status(error.code);
-            res.send(JSON.stringify({ message: error.message }));
-        } else {
-            console.log(error);
-            res.status(500);
-        }
-    } finally {
-        res.end();
-    }
+        return await link.save();
+    }, next);
+
+    res.send(JSON.stringify({ message: "OK" }));
 });
 
-router.get('/', async function (_, res) {
-    try {
-        const all = await Link.find({});
-        res.send(JSON.stringify(all));
-    } catch (error) {
-        if (error.code) {
-            res.status(error.code);
-            res.send(JSON.stringify({ message: error.message }));
-        } else {
-            console.log(error);
-            res.status(500);
-        }
-    } finally {
-        res.end();
-    }
+router.get("/", async function (_, res, next) {
+    const all = await database.query(async ({ Link }) => {
+        return await Link.find({});
+    }, next);
+
+    res.send(JSON.stringify(all));
 });
 
 export default router;

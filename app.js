@@ -1,5 +1,5 @@
-import express from 'express';
-import database from './database.js';
+import express from "express";
+import database from "./database.js";
 
 const PORT = process.env.PORT;
 
@@ -11,12 +11,12 @@ function startHandler() {
 }
 
 async function exitHandler() {
-    await database.disconnect();
+    // await database.disconnect();
     process.exit();
 }
 
 app.listen(PORT, startHandler);
-process.on('SIGINT', exitHandler.bind(null));
-process.on('uncaughtException', exitHandler.bind(null));
+process.on("SIGINT", exitHandler.bind(null));
+process.on("uncaughtException", exitHandler.bind(null));
 
 export default app;
