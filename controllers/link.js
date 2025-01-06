@@ -4,7 +4,7 @@ import database from "../database.js";
 
 const router = Router();
 
-router.post("/", async function (req, _, next) {
+router.post("/", async function (req, res, next) {
     const { body } = req;
 
     const duplicated = await database.query(
